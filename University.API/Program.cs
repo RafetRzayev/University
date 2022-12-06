@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using University.BLL.Mapping;
 using University.DAL.DataContext;
 
 namespace University.API
@@ -19,6 +20,9 @@ namespace University.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
