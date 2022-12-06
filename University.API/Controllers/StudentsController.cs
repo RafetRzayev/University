@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using University.DAL.DataContext;
 using University.DAL.Entities;
+using University.DAL.Repository.Contracts;
+using Unversity.BLL.Dtos;
 
 namespace University.API.Controllers
 {
@@ -10,19 +10,21 @@ namespace University.API.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
-
-        public StudentsController(AppDbContext dbContext)
+        private readonly IRepository<Student> _repository;
+        private readonly IMapper _mapper;
+        public StudentsController(IRepository<Student> repository, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var student = await _dbContext.Students.ToListAsync();
+            var students = await _repository.GetAllAsync();
+            var studentDtos = _mapper.Map<List<StudentDto>>(students);
             
-            return Ok(student);
+            return Ok(studentDtos);
         }
 
         [HttpGet("{id?}")]
@@ -31,12 +33,47 @@ namespace University.API.Controllers
             if (id == null)
                 return NotFound();
 
-            var student = await _dbContext.Students.FindAsync(id);
+            var student = await _repository.GetAsync(id);
 
             if (student == null)
                 return NotFound("Bele telebe movcud deyil");
 
-            return Ok(student);
+            var studentDto = _mapper.Map<StudentDto>(student);
+
+            return Ok(studentDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] StudentCreateDto studentCreateDto)
+        {
+            var student = _mapper.Map<Student>(studentCreateDto);
+
+            await _repository.AddAsync(student);
+
+            return Ok(student.Id);
+        }
+
+        [HttpPut("{id?}")]
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] StudentDto studentDto)
+        {
+            var existStudent = await _repository.GetAsync(id);
+
+            if (studentDto.Id != id)
+                return BadRequest();
+
+            var updatedStudent = _mapper.Map<Student>(studentDto);
+
+            await _repository.UpdateAsync(updatedStudent);
+
+            return Ok(updatedStudent.Id);
+        }
+
+        [HttpDelete("{id?}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            await _repository.DeleteAsync(id);
+
+            return Ok();
         }
     }
 }

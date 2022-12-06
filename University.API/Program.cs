@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using University.DAL.DataContext;
+using University.DAL.Repository;
+using University.DAL.Repository.Contracts;
+using Unversity.BLL.Mapping;
 
 namespace University.API
 {
@@ -19,6 +22,11 @@ namespace University.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
