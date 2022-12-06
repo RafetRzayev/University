@@ -42,7 +42,7 @@ namespace University.DAL.Repository
             return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetAsync(int? id)
+        public async virtual Task<T> GetAsync(int? id)
         {
             if (id == null) throw new Exception();
 

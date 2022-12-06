@@ -3,6 +3,8 @@ using University.DAL.DataContext;
 using University.DAL.Repository;
 using University.DAL.Repository.Contracts;
 using Unversity.BLL.Mapping;
+using Unversity.BLL.Services;
+using Unversity.BLL.Services.Contracts;
 
 namespace University.API
 {
@@ -26,6 +28,7 @@ namespace University.API
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
+            builder.Services.AddScoped<IStudentService, StudentService>();
 
             var app = builder.Build();
 

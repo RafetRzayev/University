@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using University.DAL.Entities;
 using University.DAL.Repository.Contracts;
 using Unversity.BLL.Dtos;
+using Unversity.BLL.Services.Contracts;
 
 namespace University.API.Controllers
 {
@@ -12,10 +13,13 @@ namespace University.API.Controllers
     {
         private readonly IRepository<Student> _repository;
         private readonly IMapper _mapper;
-        public StudentsController(IRepository<Student> repository, IMapper mapper)
+        private readonly IStudentService _studentService;
+
+        public StudentsController(IRepository<Student> repository, IMapper mapper, IStudentService studentService)
         {
             _repository = repository;
             _mapper = mapper;
+            _studentService = studentService;
         }
 
         [HttpGet]
@@ -74,6 +78,13 @@ namespace University.API.Controllers
             await _repository.DeleteAsync(id);
 
             return Ok();
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            
+            return Ok(_studentService.Test());
         }
     }
 }

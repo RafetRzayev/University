@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\University.DAL\University.DAL.csproj" />
     <ProjectReference Include="..\Unversity.BLL\Unversity.BLL.csproj" />
   </ItemGroup>
 
