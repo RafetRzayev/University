@@ -1,6 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using University.BLL;
 using University.BLL.Mapping;
+using University.BLL.Services;
+using University.BLL.Services.Contracts;
+using University.DAL;
 using University.DAL.DataContext;
+using University.DAL.Repositories;
+using University.DAL.Repositories.Contracts;
 
 namespace University.API
 {
@@ -22,6 +29,10 @@ namespace University.API
             });
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            builder.Services.AddDalServices();
+            builder.Services.AddBllServices();
+            //builder.Services.AddScoped(typeof(IRepository<>), typeof(XmlRepository<>));
 
             var app = builder.Build();
 
