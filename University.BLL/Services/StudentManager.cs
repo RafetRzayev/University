@@ -18,6 +18,7 @@ namespace University.BLL.Services
 
         public override Task AddAsync(Student entity)
         {
+            entity.CreatedAt = DateTime.Now;
             return base.AddAsync(entity);
         }
     }

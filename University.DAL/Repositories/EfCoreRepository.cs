@@ -44,6 +44,7 @@ namespace University.DAL.Repositories
 
         public Task DeleteAsync(T entity)
         {
+            entity.
             throw new NotImplementedException();
         }
 
