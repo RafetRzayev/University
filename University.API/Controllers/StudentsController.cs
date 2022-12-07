@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.DAL.Entities;
 using University.DAL.Repository.Contracts;
@@ -9,6 +10,7 @@ namespace University.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class StudentsController : ControllerBase
     {
         private readonly IRepository<Student> _repository;

@@ -1,4 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using University.AuthenticationService;
+using University.AuthenticationService.Contracts;
+using University.AuthenticationService.Models;
 using University.DAL.DataContext;
 using University.DAL.Repository;
 using University.DAL.Repository.Contracts;
@@ -25,8 +31,32 @@ namespace University.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = false;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                };
+            });
+
+            builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JWT"));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped(typeof(IRepository<>), typeof(EfCoreRepository<>));
             builder.Services.AddScoped<IStudentService, StudentService>();
 
@@ -42,8 +72,9 @@ namespace University.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
