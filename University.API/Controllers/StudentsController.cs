@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.BLL.Dtos;
 using University.BLL.Services.Contracts;
+using University.BLL.Validators.StudentValidators;
 using University.DAL.Entities;
 using University.DAL.Repositories.Contracts;
 
@@ -10,7 +12,7 @@ namespace University.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles ="Member")]
+    [Authorize(Roles ="Admin")]
     public class StudentsController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -49,8 +51,13 @@ namespace University.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] StudentCreateDto studentCreateDto)
+        public async Task<IActionResult> Post([FromBody] StudentCreateDto studentCreateDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+           
             var createdStudent = _mapper.Map<Student>(studentCreateDto);
 
             await _studentRepository.AddAsync(createdStudent);

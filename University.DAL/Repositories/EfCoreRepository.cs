@@ -16,7 +16,7 @@ namespace University.DAL.Repositories
 
         public async virtual Task AddAsync(T entity)
         {
-            await _dbContext.AddAsync(entity);
+            await _dbContext.Set<T>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -44,7 +44,6 @@ namespace University.DAL.Repositories
 
         public Task DeleteAsync(T entity)
         {
-            entity.
             throw new NotImplementedException();
         }
 

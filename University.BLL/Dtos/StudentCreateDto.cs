@@ -8,6 +8,6 @@ namespace University.BLL.Dtos
         public string Lastname { get; set; }
         public byte Age { get; set; }
 
-        public IFormFile File { get; set; }
+        //public IFormFile File { get; set; }
     }
 }

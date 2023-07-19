@@ -1,13 +1,17 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 using Univeristy.AuthenticationService;
 using Univeristy.AuthenticationService.Contracts;
 using Univeristy.AuthenticationService.Models;
 using University.BLL;
+using University.BLL.Dtos;
 using University.BLL.Mapping;
 using University.BLL.Services;
 using University.BLL.Services.Contracts;
@@ -68,8 +72,10 @@ namespace University.API
                 };
             });
 
-            builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JWT"));
 
+            builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("JWT"));
+            //builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<StudentCreateDto>());
+            builder.Services.AddValidatorsFromAssemblyContaining<StudentCreateDto>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddDalServices();
